@@ -5,7 +5,7 @@ google assistant integration with servicenow
 
   var writer = response.getStreamWriter();
 	hdrs = {};
-	var x = request.body.data;
+	var x = request.body.data; //get hold of the request JSON Object
 	var inc = '';
 	var priority = '';
 	var state = '';
