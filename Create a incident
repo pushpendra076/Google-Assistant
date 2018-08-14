@@ -1,0 +1,100 @@
+
+(function process(/*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+   
+		 var writer = response.getStreamWriter();
+			hdrs = {};
+			
+			//get hold of the request JSON Object
+			var obj = request.body.data;
+			
+			var inc = '';
+	var priority = '';
+	var state = '';
+	var assigned_to = '';
+	var context = '';
+	var command = '';
+	var message = '';
+	var status = '';
+	var desc = '';
+	var caller = '';
+	var content = '';
+	var summary = '';
+	var comments = '';
+	data = {};
+			hdrs = {};
+			
+			
+			//get the name of intent
+			if(obj.queryResult.intent.displayName =='CreateInc'){
+				
+				var numbers = obj.queryResult.parameters.issue; //parameter data from intent
+		
+				var record = new GlideRecord('incident');
+				record.query();
+		record.initialize();
+	    record.caller_id = gs.getUserName();
+		record.short_description = numbers;
+		
+	//record.u_due_date = obj.dueDate;
+		record.requested_for = gs.getUserName();
+	//record.u_opened_by = obj.opened_by;
+		record.insert();
+			
+		//var gr = new GlideRecord('incident');
+		//if(gr.get(record.sys_id)) {
+			message = 'Incident '+ record.number+ ' is currently assigned to '+record.assigned_to+ '. Current State of the incident is '+ record.getDisplayValue('state');
+			context = 'success';
+			
+				message= 'Incident '+ record.number+ ' is currently assigned to '+record.assigned_to+ '. Current State of the incident is '+ record.getDisplayValue('state');
+				//"Response":"INCIDENT created Successfully."
+		
+			}
+		else{
+			
+				message = 'Incident not created';
+			
+			}
+		
+	
+		
+	
+		
+		var messages = 'Incident ';
+	hdrs['Content-Type'] = 'application/json';
+	hdrs['Accept'] = 'application/json';
+	response.setStatus(200);
+	response.setHeaders(hdrs);
+	var response_body = {
+		
+		'fulfillmentText': message,
+		'payload' : {
+			
+			"google":{
+				
+				'expectUserResponse':true,
+				'richResponse':{
+				
+				'items':[
+					{
+						'simpleResponse':{
+							"textToSpeech": message
+							
+						}
+						
+					
+					}
+				]
+				
+			}
+			}
+		}
+			
+		};
+			
+			writer.writeString(global.JSON.stringify(response_body));
+	
+		gs.log('Something wronng with request paramaters' + e);
+	
+
+})(request, response);
