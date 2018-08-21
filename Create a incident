@@ -94,7 +94,7 @@
 			
 			writer.writeString(global.JSON.stringify(response_body));
 	
-		gs.log('Something wronng with request paramaters' + e);
+		//gs.log('Something wronng with request paramaters' + e);
 	
 
 })(request, response);
